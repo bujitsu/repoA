@@ -6,7 +6,7 @@ on:
       repo_to_trigger:
         description: "The repository to trigger"
         required: true
-        default: "repo1"
+        default: "repo99"
         type: choice
         options:
           - repo1

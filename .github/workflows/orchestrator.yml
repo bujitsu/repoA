@@ -1,0 +1,50 @@
+name: Orchestrator for Repo1 and Repo2
+
+on:
+  workflow_dispatch:  # This allows you to trigger the workflow manually from the GitHub Actions tab.
+    inputs:
+      repo_to_trigger:
+        description: "The repository to trigger"
+        required: true
+        default: "repo1"
+        type: choice
+        options:
+          - repo1
+          - repo2
+          - repo99
+      release_type:
+        description: "The type of release to trigger"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      
+jobs:
+  orchestrate-repos:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repoA
+        uses: actions/checkout@v2
+
+      - name: Trigger repository_dispatch for selected repository
+        run: |
+            if [ "${{ github.event.inputs.repo_to_trigger }}" == "repo1" ]; then
+                curl -X POST https://api.github.com/repos/bujitsu/repo1/dispatches \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -d '{"event_type": "trigger-action", "client_payload": {"inputs.release_type": "${{ github.event.inputs.release_type }}"}}'
+            elif [ "${{ github.event.inputs.repo_to_trigger }}" == "repo2" ]; then
+                 curl -X POST https://api.github.com/repos/bujitsu/repo2/dispatches \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -d '{"event_type": "trigger-action", "client_payload": {"inputs.release_type": "${{ github.event.inputs.release_type }}"}}'
+            elif [ "${{ github.event.inputs.repo_to_trigger }}" == "repo99" ]; then
+                 curl -X POST https://api.github.com/repos/bujitsu/repo99/dispatches \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -d '{"event_type": "trigger-action", "client_payload": {"inputs.release_type": "${{ github.event.inputs.release_type }}"}}'
+            else
+                echo "Invalid repository selected"
+                exit 1
+            fi

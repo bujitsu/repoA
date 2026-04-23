@@ -35,15 +35,15 @@ jobs:
             if [ "${{ github.event.inputs.repo_to_trigger }}" == "repo1" ]; then
                 curl -X POST https://api.github.com/repos/bujitsu/repo1/dispatches \
                 -H "Authorization: token ${{ secrets.REPO_PAT }}" \
-                -d '{"event_type": "trigger-release", "client_payload": {"inputs.release_type": "${{ github.event.inputs.release_type }}"}}'
+                -d '{"event_type": "trigger-release", "client_payload": {"release_type": "${{ github.event.inputs.release_type }}"}}'
             elif [ "${{ github.event.inputs.repo_to_trigger }}" == "repo2" ]; then
                  curl -X POST https://api.github.com/repos/bujitsu/repo2/dispatches \
                 -H "Authorization: token ${{ secrets.REPO_PAT }}" \
-                -d '{"event_type": "trigger-release", "client_payload": {"inputs.release_type": "${{ github.event.inputs.release_type }}"}}'
+                -d '{"event_type": "trigger-release", "client_payload": {"release_type": "${{ github.event.inputs.release_type }}"}}'
             elif [ "${{ github.event.inputs.repo_to_trigger }}" == "repo99" ]; then
                  curl -X POST https://api.github.com/repos/bujitsu/repo99/dispatches \
                 -H "Authorization: token ${{ secrets.REPO_PAT }}" \
-                -d '{"event_type": "trigger-release", "client_payload": {"inputs.release_type": "${{ github.event.inputs.release_type }}"}}'
+                -d '{"event_type": "trigger-release", "client_payload": {"release_type": "${{ github.event.inputs.release_type }}"}}'
             else
                 echo "Invalid repository selected"
                 exit 1

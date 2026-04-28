@@ -1,0 +1,70 @@
+name: Orchestrator for Repo1 and Repo2
+
+on:
+  workflow_dispatch:  # This allows you to trigger the workflow manually from the GitHub Actions tab.
+    inputs:
+      trigger_repo1:
+        description: "Trigger Repo1"
+        required: false
+        default: false
+        type: boolean
+      trigger_repo2:
+        description: "Trigger Repo2"
+        required: false
+        default: false
+        type: boolean
+      trigger_repo99:
+        description: "Trigger Repo99"
+        required: false
+        default: false
+        type: boolean
+      deploy_all:
+        description: "Trigger all repositories"
+        required: false
+        default: false
+        type: boolean
+      release_type:
+        description: "The type of release to trigger"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      
+jobs:
+  orchestrate-repos-matrix:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - repo: repo1
+            enabled: ${{ inputs.trigger_repo1 }}
+            use_release_type: false
+          # - repo: repo2
+          #   enabled: ${{ inputs.trigger_repo2 }}
+          #   use_release_type: false
+          - repo: repo99
+            enabled: ${{ inputs.trigger_repo99 }}
+            use_release_type: true
+    steps:
+      - name: Checkout repoA
+        if: ${{ matrix.enabled }}
+        uses: actions/checkout@v2
+
+      - name: Trigger release (without release type)
+        if: ${{ matrix.enabled && !matrix.use_release_type }}
+        run: |
+            curl -X POST https://api.github.com/repos/bujitsu/${{ matrix.repo }}/dispatches \
+            -H "Authorization: token ${{ secrets.REPO_PAT }}" \
+            -d '{"event_type": "trigger-release"}'
+      
+      - name: Trigger release (with release type)
+        if: ${{ matrix.enabled && matrix.use_release_type }}
+
+        run: |
+            curl -X POST https://api.github.com/repos/bujitsu/${{ matrix.repo }}/dispatches \
+            -H "Authorization: token ${{ secrets.REPO_PAT }}" \
+            -d '{"event_type": "trigger-release", "client_payload": {"release_type": "${{ inputs.release_type }}"}}'

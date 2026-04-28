@@ -41,13 +41,13 @@ jobs:
       matrix:
         include:
           - repo: repo1
-            enabled: ${{ inputs.trigger_repo1 }}
+            enabled: ${{ inputs.trigger_repo1 || inputs.deploy_all }}
             use_release_type: false
           # - repo: repo2
           #   enabled: ${{ inputs.trigger_repo2 }}
           #   use_release_type: false
           - repo: repo99
-            enabled: ${{ inputs.trigger_repo99 }}
+            enabled: ${{ inputs.trigger_repo99 || inputs.deploy_all }}
             use_release_type: true
     steps:
       - name: Checkout repoA

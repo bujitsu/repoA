@@ -1,4 +1,4 @@
-name: Orchestrator for Repo1 and Repo2
+name: Orchestrator matrix
 
 on:
   workflow_dispatch:  # This allows you to trigger the workflow manually from the GitHub Actions tab.
